@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusBoard — Organize seu dia</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js"></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       TELA DE LOGIN
+       Mostrar esta tela ao carregar a página.
+       Ocultar após autenticação (implementar em script.js).
+  ============================================================ -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">FocusBoard</span>
+      </div>
+      <p class="login-subtitle">Organize seu dia com eficiência.</p>
+
+      <div class="login-form">
+        <!-- TODO: Capturar valores e validar em script.js -->
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="voce@email.com"
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input
+            type="password"
+            id="senha"
+            class="form-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <!-- TODO: implementar autenticação em script.js
+             Função sugerida: fazerLogin()
+             - Capturar valores dos campos
+             - Validar campos não vazios
+             - Verificar credenciais (localStorage ou mock)
+             - Exibir app e ocultar login-screen
+        -->
+        <button id="btn-login" class="btn btn-primary btn-block" onclick="fazerLogin()">
+          Entrar
+        </button>
+
+        <p class="login-hint">Demo: qualquer e-mail e senha funcionam<br><em>(após implementar a lógica)</em></p>
+      </div>
+    </div>
+  </div>
+  <!-- fim #login-screen -->
+
+
+  <!-- ============================================================
+       APLICAÇÃO PRINCIPAL
+       Oculta por padrão. Exibir após login bem-sucedido.
+  ============================================================ -->
+  <div id="app" class="app hidden">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside id="sidebar" class="sidebar" aria-label="Navegação principal">
+
+      <!-- Perfil do usuário -->
+      <div class="sidebar-profile">
+        <div class="avatar" aria-hidden="true">AM</div>
+        <div class="profile-info">
+          <span class="profile-name">Ana Martins</span>
+          <span class="profile-role">Desenvolvedora Full Stack</span>
+        </div>
+      </div>
+
+      <!-- Menu de navegação
+           TODO: implementar navegação em script.js
+           Função sugerida: navegarPara(secao)
+           - Ocultar todas as seções
+           - Exibir apenas a seção correspondente
+           - Atualizar classe "active" no item de menu
+      -->
+      <nav class="sidebar-nav" aria-label="Menu principal">
+        <ul class="nav-list" role="menubar">
+          <li role="none">
+            <button
+              class="nav-item active"
+              role="menuitem"
+              data-section="tarefas"
+              onclick="navegarPara('tarefas')"
+              aria-current="page"
+            >
+              <span class="nav-icon" aria-hidden="true">▦</span>
+              <span>Tarefas</span>
+            </button>
+          </li>
+          <li role="none">
+            <button
+              class="nav-item"
+              role="menuitem"
+              data-section="anotacoes"
+              onclick="navegarPara('anotacoes')"
+            >
+              <span class="nav-icon" aria-hidden="true">✎</span>
+              <span>Anotações</span>
+            </button>
+          </li>
+          <li role="none">
+            <button
+              class="nav-item"
+              role="menuitem"
+              data-section="pomodoro"
+              onclick="navegarPara('pomodoro')"
+            >
+              <span class="nav-icon" aria-hidden="true">◷</span>
+              <span>Pomodoro</span>
+            </button>
+          </li>
+          <li role="none">
+            <button
+              class="nav-item"
+              role="menuitem"
+              data-section="dashboard"
+              onclick="navegarPara('dashboard')"
+            >
+              <span class="nav-icon" aria-hidden="true">◈</span>
+              <span>Dashboard</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <!-- Seletor de Tema
+             TODO: implementar troca de tema em script.js
+             Função sugerida: trocarTema(tema)
+             - Atualizar atributo data-theme no <html>
+             - Salvar preferência no localStorage
+             - Atualizar botão ativo
+        -->
+        <div class="theme-selector" aria-label="Selecionar tema">
+          <span class="theme-label">Tema</span>
+          <div class="theme-buttons">
+            <button
+              class="theme-btn active"
+              data-theme="dark"
+              onclick="trocarTema('dark')"
+              title="Dark"
+              aria-label="Tema escuro"
+            >🌙</button>
+            <button
+              class="theme-btn"
+              data-theme="light"
+              onclick="trocarTema('light')"
+              title="Light"
+              aria-label="Tema claro"
+            >☀️</button>
+            <button
+              class="theme-btn"
+              data-theme="xp"
+              onclick="trocarTema('xp')"
+              title="Windows XP"
+              aria-label="Tema Windows XP"
+            >🖥️</button>
+          </div>
+        </div>
+
+        <!-- TODO: implementar logout em script.js
+             Função sugerida: fazerLogout()
+             - Ocultar app
+             - Exibir login-screen
+             - Limpar dados de sessão se necessário
+        -->
+        <button class="btn-logout" onclick="fazerLogout()" aria-label="Sair da conta">
+          <span aria-hidden="true">⎋</span> Sair
+        </button>
+      </div>
+
+      <!-- Botão mobile para fechar sidebar -->
+      <button
+        id="sidebar-close"
+        class="sidebar-close"
+        onclick="fecharSidebar()"
+        aria-label="Fechar menu"
+      >✕</button>
+    </aside>
+    <!-- fim .sidebar -->
+
+    <!-- Overlay mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
+
+    <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
+    <main id="main-content" class="main-content">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <button
+          id="menu-toggle"
+          class="menu-toggle"
+          onclick="abrirSidebar()"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <div class="topbar-title" id="topbar-title">Tarefas</div>
+        <div class="topbar-actions">
+          <span class="topbar-date" id="topbar-date">Qua, 3 Jun 2026</span>
+        </div>
+      </header>
+
+      <!-- ======================================================
+           SEÇÃO: TAREFAS (Kanban)
+           data-section="tarefas"
+      ====================================================== -->
+      <section id="section-tarefas" class="section active" data-section="tarefas" aria-label="Quadro de tarefas">
+
+        <!-- Controles do kanban -->
+        <div class="section-controls">
+          <!-- TODO: implementar pesquisa em script.js
+               Função sugerida: pesquisarTarefas(termo)
+               - Filtrar cartões pelo título/descrição
+               - Ocultar cartões que não correspondem
+          -->
+          <div class="search-wrapper">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input
+              type="search"
+              id="pesquisa-tarefa"
+              class="search-input"
+              placeholder="Pesquisar tarefas..."
+              oninput="pesquisarTarefas(this.value)"
+              aria-label="Pesquisar tarefas"
+            />
+          </div>
+
+          <!-- TODO: implementar filtro em script.js
+               Função sugerida: filtrarPorStatus(status)
+               - Mostrar apenas cartões do status selecionado
+               - "todos" mostra tudo
+          -->
+          <select
+            id="filtro-status"
+            class="select-filter"
+            onchange="filtrarPorStatus(this.value)"
+            aria-label="Filtrar por status"
+          >
+            <option value="todos">Todos os status</option>
+            <option value="afazer">A Fazer</option>
+            <option value="fazendo">Fazendo</option>
+            <option value="concluido">Concluído</option>
+          </select>
+
+          <!-- TODO: implementar modal/formulário em script.js
+               Função sugerida: abrirModalNovaTarefa()
+               - Exibir formulário para criar nova tarefa
+               - Após salvar, chamar adicionarTarefa(dados)
+          -->
+          <button class="btn btn-primary" onclick="abrirModalNovaTarefa()" aria-label="Criar nova tarefa">
+            <span aria-hidden="true">+</span> Nova Tarefa
+          </button>
+        </div>
+
+        <!-- Kanban Board
+             TODO: implementar Drag and Drop em script.js
+             Evento sugerido: dragstart, dragover, drop
+             - Ao soltar cartão em coluna diferente, atualizar status
+             - Salvar nova ordem/status no localStorage
+        -->
+        <div class="kanban-board" role="region" aria-label="Quadro Kanban">
+
+          <!-- Coluna: A Fazer -->
+          <div
+            class="kanban-col"
+            data-status="afazer"
+            ondragover="event.preventDefault()"
+            ondrop="soltarTarefa(event, 'afazer')"
+            aria-label="Coluna A Fazer"
+          >
+            <div class="col-header">
+              <span class="col-dot dot-todo" aria-hidden="true"></span>
+              <h2 class="col-title">A Fazer</h2>
+              <span class="col-count" id="count-afazer">3</span>
+            </div>
+
+            <div class="cards-container" id="col-afazer">
+              <!-- Cartão de exemplo -->
+              <article
+                class="card"
+                draggable="true"
+                data-id="1"
+                data-status="afazer"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa: Criar wireframes do projeto"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-design">Design</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(1)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(1)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Criar wireframes do projeto</h3>
+                <p class="card-desc">Esboçar as telas principais antes de iniciar o desenvolvimento.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="2026-06-05">05 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+
+              <article
+                class="card"
+                draggable="true"
+                data-id="2"
+                data-status="afazer"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa: Revisar documentação da API"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-backend">Backend</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(2)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(2)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Revisar documentação da API</h3>
+                <p class="card-desc">Atualizar endpoints de autenticação e adicionar exemplos de resposta.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="2026-06-07">07 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+
+              <article
+                class="card"
+                draggable="true"
+                data-id="3"
+                data-status="afazer"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa: Configurar CI/CD pipeline"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-devops">DevOps</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(3)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(3)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Configurar CI/CD pipeline</h3>
+                <p class="card-desc">Integrar GitHub Actions com deploy automático no servidor de staging.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="2026-06-10">10 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+            </div>
+
+            <button class="btn-add-card" onclick="abrirModalNovaTarefa('afazer')" aria-label="Adicionar tarefa à coluna A Fazer">
+              <span aria-hidden="true">+</span> Adicionar tarefa
+            </button>
+          </div>
+          <!-- fim col A Fazer -->
+
+          <!-- Coluna: Fazendo -->
+          <div
+            class="kanban-col"
+            data-status="fazendo"
+            ondragover="event.preventDefault()"
+            ondrop="soltarTarefa(event, 'fazendo')"
+            aria-label="Coluna Fazendo"
+          >
+            <div class="col-header">
+              <span class="col-dot dot-doing" aria-hidden="true"></span>
+              <h2 class="col-title">Fazendo</h2>
+              <span class="col-count" id="count-fazendo">2</span>
+            </div>
+
+            <div class="cards-container" id="col-fazendo">
+              <article
+                class="card"
+                draggable="true"
+                data-id="4"
+                data-status="fazendo"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa: Implementar autenticação JWT"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-backend">Backend</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(4)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(4)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Implementar autenticação JWT</h3>
+                <p class="card-desc">Criar middleware de autenticação e refresh token automático.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="2026-06-04">04 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+
+              <article
+                class="card"
+                draggable="true"
+                data-id="5"
+                data-status="fazendo"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa: Refatorar componente de tabela"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-frontend">Frontend</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(5)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(5)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Refatorar componente de tabela</h3>
+                <p class="card-desc">Melhorar performance de renderização e adicionar ordenação por colunas.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="2026-06-03">03 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+            </div>
+
+            <button class="btn-add-card" onclick="abrirModalNovaTarefa('fazendo')" aria-label="Adicionar tarefa à coluna Fazendo">
+              <span aria-hidden="true">+</span> Adicionar tarefa
+            </button>
+          </div>
+          <!-- fim col Fazendo -->
+
+          <!-- Coluna: Concluído -->
+          <div
+            class="kanban-col"
+            data-status="concluido"
+            ondragover="event.preventDefault()"
+            ondrop="soltarTarefa(event, 'concluido')"
+            aria-label="Coluna Concluído"
+          >
+            <div class="col-header">
+              <span class="col-dot dot-done" aria-hidden="true"></span>
+              <h2 class="col-title">Concluído</h2>
+              <span class="col-count" id="count-concluido">3</span>
+            </div>
+
+            <div class="cards-container" id="col-concluido">
+              <article
+                class="card card-done"
+                draggable="true"
+                data-id="6"
+                data-status="concluido"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa concluída: Setup inicial do projeto"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-devops">DevOps</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(6)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(6)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Setup inicial do projeto</h3>
+                <p class="card-desc">Configurar repositório, estrutura de pastas e dependências base.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">✔</span>
+                    <time datetime="2026-06-01">01 Jun 2026</time>
+                  </span>
+                </div>
+              </article>
+
+              <article
+                class="card card-done"
+                draggable="true"
+                data-id="7"
+                data-status="concluido"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa concluída: Design system definido"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-design">Design</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(7)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(7)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Design system definido</h3>
+                <p class="card-desc">Cores, tipografia e componentes base documentados no Figma.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">✔</span>
+                    <time datetime="2026-05-30">30 Mai 2026</time>
+                  </span>
+                </div>
+              </article>
+
+              <article
+                class="card card-done"
+                draggable="true"
+                data-id="8"
+                data-status="concluido"
+                ondragstart="arrastarTarefa(event)"
+                aria-label="Tarefa concluída: Reunião de kick-off"
+              >
+                <div class="card-header">
+                  <span class="card-tag tag-frontend">Frontend</span>
+                  <div class="card-actions">
+                    <button class="card-btn" onclick="editarTarefa(8)" aria-label="Editar tarefa">✎</button>
+                    <button class="card-btn card-btn-danger" onclick="removerTarefa(8)" aria-label="Remover tarefa">✕</button>
+                  </div>
+                </div>
+                <h3 class="card-title">Reunião de kick-off</h3>
+                <p class="card-desc">Alinhamento com a equipe sobre objetivos e cronograma do sprint.</p>
+                <div class="card-footer">
+                  <span class="card-date">
+                    <span aria-hidden="true">✔</span>
+                    <time datetime="2026-05-28">28 Mai 2026</time>
+                  </span>
+                </div>
+              </article>
+            </div>
+
+            <button class="btn-add-card" onclick="abrirModalNovaTarefa('concluido')" aria-label="Adicionar tarefa à coluna Concluído">
+              <span aria-hidden="true">+</span> Adicionar tarefa
+            </button>
+          </div>
+          <!-- fim col Concluído -->
+
+        </div>
+        <!-- fim .kanban-board -->
+
+        <!-- Barra de Progresso
+             TODO: implementar cálculo em script.js
+             Função sugerida: atualizarProgresso()
+             - Contar total de tarefas e tarefas concluídas
+             - Calcular percentual
+             - Atualizar width da .progress-fill e texto .progress-label
+        -->
+        <div class="progress-section" aria-label="Progresso do projeto">
+          <div class="progress-header">
+            <span class="progress-title">Progresso geral</span>
+            <span class="progress-label" id="progress-label" aria-live="polite">37%</span>
+          </div>
+          <div
+            class="progress-bar"
+            role="progressbar"
+            aria-valuenow="37"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-label="37% das tarefas concluídas"
+          >
+            <div class="progress-fill" id="progress-fill" style="width: 37%"></div>
+          </div>
+          <p class="progress-hint">3 de 8 tarefas concluídas</p>
+        </div>
+
+      </section>
+      <!-- fim #section-tarefas -->
+
+
+      <!-- ======================================================
+           SEÇÃO: ANOTAÇÕES
+           data-section="anotacoes"
+      ====================================================== -->
+      <section id="section-anotacoes" class="section" data-section="anotacoes" aria-label="Anotações" hidden>
+        <div class="notes-wrapper">
+          <div class="notes-meta">
+            <!-- TODO: implementar contagem de caracteres em script.js
+                 Evento sugerido: oninput no textarea
+                 Função sugerida: contarCaracteres()
+                 - Atualizar #char-count com textarea.value.length
+            -->
+            <span class="notes-info">
+              <span aria-hidden="true">✎</span> Anotações pessoais
+            </span>
+            <div class="notes-status">
+              <span id="save-indicator" class="save-indicator" aria-live="polite">
+                <!-- TODO: exibir "Salvando..." ao digitar e "Salvo ✓" após salvar no localStorage -->
+                <span aria-hidden="true">○</span> Não salvo
+              </span>
+              <span class="char-count">
+                <span id="char-count">0</span> caracteres
+              </span>
+            </div>
+          </div>
+
+          <!-- TODO: implementar salvamento em script.js
+               Eventos sugeridos: oninput, onkeydown (Ctrl+S)
+               Funções sugeridas:
+               - contarCaracteres() → atualizar #char-count
+               - salvarAnotacao() → salvar no localStorage
+               - carregarAnotacao() → restaurar ao abrir
+          -->
+          <textarea
+            id="notes-area"
+            class="notes-area"
+            placeholder="Digite suas anotações aqui..."
+            oninput="contarCaracteres(); salvarAnotacao();"
+            aria-label="Área de anotações"
+            spellcheck="true"
+          ></textarea>
+        </div>
+      </section>
+      <!-- fim #section-anotacoes -->
+
+
+      <!-- ======================================================
+           SEÇÃO: POMODORO
+           data-section="pomodoro"
+      ====================================================== -->
+      <section id="section-pomodoro" class="section" data-section="pomodoro" aria-label="Pomodoro" hidden>
+        <div class="pomodoro-wrapper">
+
+          <!-- Seletor de modo
+               TODO: implementar seleção de modo em script.js
+               Função sugerida: selecionarModoPomodoro(modo)
+               - Atualizar tempo conforme modo selecionado:
+                 foco = 25:00, pausa = 05:00, pausaLonga = 15:00
+               - Atualizar visual do botão ativo
+               - Reiniciar timer
+          -->
+          <div class="pomodoro-modes" role="tablist" aria-label="Modos do Pomodoro">
+            <button
+              class="mode-btn active"
+              role="tab"
+              data-mode="foco"
+              data-duration="1500"
+              onclick="selecionarModoPomodoro('foco')"
+              aria-selected="true"
+            >Foco</button>
+            <button
+              class="mode-btn"
+              role="tab"
+              data-mode="pausa"
+              data-duration="300"
+              onclick="selecionarModoPomodoro('pausa')"
+              aria-selected="false"
+            >Pausa</button>
+            <button
+              class="mode-btn"
+              role="tab"
+              data-mode="pausaLonga"
+              data-duration="900"
+              onclick="selecionarModoPomodoro('pausaLonga')"
+              aria-selected="false"
+            >Pausa Longa</button>
+          </div>
+
+          <!-- Timer circular
+               TODO: implementar animação da barra circular em script.js
+               A barra usa stroke-dashoffset no SVG para animar.
+               Calcule: offset = circunferência × (1 - tempoRestante / tempoTotal)
+               Circunferência = 2π × raio = 2 × 3.14159 × 90 ≈ 565.49
+          -->
+          <div class="pomodoro-timer-wrapper" role="timer" aria-live="polite" aria-label="Temporizador">
+            <svg class="pomodoro-ring" viewBox="0 0 200 200" aria-hidden="true">
+              <!-- Trilha de fundo -->
+              <circle
+                class="ring-track"
+                cx="100" cy="100" r="90"
+                fill="none"
+                stroke-width="8"
+              />
+              <!-- Barra de progresso circular
+                   stroke-dasharray="565.49"
+                   stroke-dashoffset controla o preenchimento
+                   TODO: atualizar stroke-dashoffset via JS a cada segundo
+              -->
+              <circle
+                id="ring-progress"
+                class="ring-progress"
+                cx="100" cy="100" r="90"
+                fill="none"
+                stroke-width="8"
+                stroke-dasharray="565.49"
+                stroke-dashoffset="0"
+                transform="rotate(-90 100 100)"
+              />
+            </svg>
+
+            <div class="pomodoro-display">
+              <!-- TODO: atualizar #timer-display a cada segundo
+                   Formato: MM:SS
+                   Função sugerida: formatarTempo(segundos) → "25:00"
+              -->
+              <span id="timer-display" class="timer-display">25:00</span>
+              <span id="timer-mode-label" class="timer-mode-label">Foco</span>
+            </div>
+          </div>
+
+          <!-- Controles do timer
+               TODO: implementar em script.js
+               Funções sugeridas:
+               - iniciarPomodoro() → iniciar setInterval de 1s
+               - pausarPomodoro() → clearInterval
+               - reiniciarPomodoro() → resetar tempo e ring-progress
+          -->
+          <div class="pomodoro-controls">
+            <button class="btn btn-secondary" onclick="reiniciarPomodoro()" aria-label="Reiniciar temporizador">
+              ↺ Reiniciar
+            </button>
+            <button class="btn btn-primary btn-large" id="btn-pomodoro-play" onclick="iniciarPomodoro()" aria-label="Iniciar temporizador">
+              ▶ Iniciar
+            </button>
+            <button class="btn btn-secondary" onclick="pausarPomodoro()" aria-label="Pausar temporizador">
+              ⏸ Pausar
+            </button>
+          </div>
+
+          <p class="pomodoro-hint" aria-live="polite">
+            Sessão <span id="session-count">1</span> de 4 •
+            <!-- TODO: atualizar sessão ao concluir cada foco -->
+            <span id="session-label">Concentre-se na sua tarefa</span>
+          </p>
+        </div>
+      </section>
+      <!-- fim #section-pomodoro -->
+
+
+      <!-- ======================================================
+           SEÇÃO: DASHBOARD (Estatísticas)
+           data-section="dashboard"
+      ====================================================== -->
+      <section id="section-dashboard" class="section" data-section="dashboard" aria-label="Dashboard de estatísticas" hidden>
+
+        <!-- Cards de estatísticas
+             TODO: implementar atualização dinâmica em script.js
+             Função sugerida: atualizarDashboard()
+             - Contar tarefas por status no array de dados
+             - Atualizar os valores nos cards
+             - Atualizar gráfico de barras
+        -->
+        <div class="stats-grid">
+          <article class="stat-card" aria-label="Total de tarefas">
+            <div class="stat-icon stat-icon-total" aria-hidden="true">▦</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-total">8</span>
+              <span class="stat-label">Total de tarefas</span>
+            </div>
+          </article>
+
+          <article class="stat-card" aria-label="Tarefas pendentes">
+            <div class="stat-icon stat-icon-todo" aria-hidden="true">○</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-afazer">3</span>
+              <span class="stat-label">A Fazer</span>
+            </div>
+          </article>
+
+          <article class="stat-card" aria-label="Tarefas em andamento">
+            <div class="stat-icon stat-icon-doing" aria-hidden="true">◑</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-fazendo">2</span>
+              <span class="stat-label">Fazendo</span>
+            </div>
+          </article>
+
+          <article class="stat-card" aria-label="Tarefas concluídas">
+            <div class="stat-icon stat-icon-done" aria-hidden="true">●</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-concluido">3</span>
+              <span class="stat-label">Concluídas</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Gráfico de barras (apenas HTML + CSS)
+             TODO: implementar atualização das barras em script.js
+             Função sugerida: atualizarGrafico()
+             - Calcular altura relativa de cada barra
+             - Atualizar height das .bar-fill via style
+             - Atualizar .bar-value com o número correspondente
+        -->
+        <div class="chart-section" aria-label="Gráfico de distribuição de tarefas">
+          <h2 class="chart-title">Distribuição de Tarefas</h2>
+          <div class="bar-chart" role="img" aria-label="Gráfico de barras: A Fazer 3, Fazendo 2, Concluído 3">
+            <div class="bar-group">
+              <div class="bar-container">
+                <span class="bar-value" id="bar-val-afazer">3</span>
+                <!-- style="height: X%" — atualizar via JS -->
+                <div class="bar-fill bar-todo" id="bar-afazer" style="height: 60%" aria-hidden="true"></div>
+              </div>
+              <span class="bar-label">A Fazer</span>
+            </div>
+            <div class="bar-group">
+              <div class="bar-container">
+                <span class="bar-value" id="bar-val-fazendo">2</span>
+                <div class="bar-fill bar-doing" id="bar-fazendo" style="height: 40%" aria-hidden="true"></div>
+              </div>
+              <span class="bar-label">Fazendo</span>
+            </div>
+            <div class="bar-group">
+              <div class="bar-container">
+                <span class="bar-value" id="bar-val-concluido">3</span>
+                <div class="bar-fill bar-done" id="bar-concluido" style="height: 60%" aria-hidden="true"></div>
+              </div>
+              <span class="bar-label">Concluído</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card de resumo diário -->
+        <div class="summary-card" aria-label="Resumo diário">
+          <span class="summary-icon" aria-hidden="true">🎯</span>
+          <div class="summary-text">
+            <!-- TODO: atualizar dinamicamente em script.js
+                 Função sugerida: atualizarResumoDiario()
+                 - Contar tarefas concluídas hoje pela data
+                 - Atualizar #resumo-concluidas
+            -->
+            <strong>Você concluiu <span id="resumo-concluidas">8</span> tarefas hoje.</strong>
+            <span>Continue assim! Amanhã haverá mais desafios. 🚀</span>
+          </div>
+        </div>
+
+      </section>
+      <!-- fim #section-dashboard -->
+
+    </main>
+    <!-- fim .main-content -->
+
+  </div>
+  <!-- fim #app -->
+
+
+  <!-- ======================================================
+       MODAL: Nova / Editar Tarefa
+       TODO: exibir/ocultar via JS com abrirModalNovaTarefa() e fecharModal()
+  ====================================================== -->
+  <div id="modal-tarefa" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-titulo" class="modal-title">Nova Tarefa</h2>
+        <button class="modal-close" onclick="fecharModal()" aria-label="Fechar modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="modal-tarefa-titulo">Título</label>
+          <input type="text" id="modal-tarefa-titulo" class="form-input" placeholder="Ex: Implementar autenticação" />
+        </div>
+        <div class="form-group">
+          <label for="modal-tarefa-desc">Descrição</label>
+          <textarea id="modal-tarefa-desc" class="form-input form-textarea" placeholder="Descreva a tarefa..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="modal-tarefa-data">Data</label>
+            <input type="date" id="modal-tarefa-data" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label for="modal-tarefa-status">Status</label>
+            <select id="modal-tarefa-status" class="form-input">
+              <option value="afazer">A Fazer</option>
+              <option value="fazendo">Fazendo</option>
+              <option value="concluido">Concluído</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modal-tarefa-tag">Categoria</label>
+          <select id="modal-tarefa-tag" class="form-input">
+            <option value="frontend">Frontend</option>
+            <option value="backend">Backend</option>
+            <option value="design">Design</option>
+            <option value="devops">DevOps</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <!-- TODO: implementar salvarTarefa() em script.js
+             - Capturar valores dos campos
+             - Criar objeto de tarefa com ID único
+             - Adicionar ao array de tarefas
+             - Renderizar novo cartão no Kanban
+             - Salvar no localStorage
+             - Fechar modal
+        -->
+        <button class="btn btn-primary" onclick="salvarTarefa()">Salvar Tarefa</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
