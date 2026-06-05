@@ -1,4 +1,4 @@
-//acesso login
+//lógica de login - Snádya 
 
 function validarLogin() {
   const email = document.getElementById("email").value;
@@ -20,4 +20,19 @@ function validarLogin() {
     alert("Email ou senha inválidos.");
   }
 } 
+
+//lógica das opções - Snádya 
+
+function navegarPara(secao) {
+
+      document.querySelectorAll(".section").forEach(section => {
+      section.classList.remove("active");
+      section.hidden = true;
+    }); 
+
+      const destino = document.getElementById(`section-${secao}`);
+
+    destino.hidden = false;
+    destino.classList.add("active");
+}
 
