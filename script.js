@@ -36,33 +36,52 @@ function navegarPara(secao) {
     destino.classList.add("active");
 }
 
-//lógica do pomodoro - Snádya 
+//lógica do pomodoro - Snádya
 
 let tempo = 25 * 60;
 let contagemTempo = null;
+let modoAtual = "foco";
+
+const tempos = {
+    foco: 25 * 60,
+    pausa: 5 * 60,
+    pausaLonga: 15 * 60
+};
+
+function atualizarDisplay() {
+
+    const minutos = Math.floor(tempo / 60);
+    const segundos = tempo % 60;
+
+    document.getElementById("timer-display").textContent = `${minutos.toString().padStart(2, "0")}:${segundos.toString().padStart(2, "0")}`;
+}
 
 function iniciarPomodoro() {
 
-    const display = document.getElementById("timer-display");
+    if (contagemTempo) return;
 
     contagemTempo = setInterval(() => {
 
-        const minutos = Math.floor(tempo / 60);
-        const segundos = tempo % 60;
-
-        display.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-
         tempo--;
 
-    }, 1000);
+        atualizarDisplay();
 
-    
+        if (tempo <= 0) {
+
+            clearInterval(contagemTempo);
+            contagemTempo = null;
+
+            tempo = 0;
+            atualizarDisplay();
+            
+        }
+
+    }, 1000);
 }
 
 function pausarPomodoro() {
 
     clearInterval(contagemTempo);
-
     contagemTempo = null;
 
 }
@@ -72,14 +91,18 @@ function reiniciarPomodoro() {
     clearInterval(contagemTempo);
     contagemTempo = null;
 
-    tempo = 25 * 60;
+    tempo = tempos[modoAtual];
 
-    document.getElementById("timer-display").textContent = "25:00";
+    atualizarDisplay();
 
-    iniciarPomodoro();
 }
 
 function selecionarModoPomodoro(modo) {
+
+    modoAtual = modo;
+
+    clearInterval(contagemTempo);
+    contagemTempo = null;
 
     document.querySelectorAll(".mode-btn").forEach(botao => {
         botao.classList.remove("active");
@@ -87,21 +110,11 @@ function selecionarModoPomodoro(modo) {
 
     document.querySelector(`[data-mode="${modo}"]`).classList.add("active");
 
-    if (modo === "foco") {
-        tempo = 25 * 60;
-    }
+    tempo = tempos[modo];
 
-    if (modo === "pausa") {
-        tempo = 5 * 60;
-    }
+    atualizarDisplay();
 
-    if (modo === "pausaLonga") {
-        tempo = 15 * 60;
-    }
-
-    const minutos = Math.floor(tempo / 60);
-
-    document.getElementById("timer-display").textContent = `${minutos.toString().padStart(2, "0")}:00`;
-
-    document.getElementById("timer-mode-label").textContent = modo === "foco" ? "Foco" : modo === "pausa" ? "Pausa" : "Pausa Longa";
+    document.getElementById("timer-mode-label").textContent = modo === "foco"  ? "FOCO" : modo === "pausa" ? "PAUSA" : "PAUSA LONGA";
 }
+
+atualizarDisplay();
