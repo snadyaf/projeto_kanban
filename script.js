@@ -277,4 +277,33 @@ function renderizarTarefa(tarefa) {
   }
 }
 
+//lógica de troca de tema (claro/escuro/xp) - miguel
 
+function trocarTema(tema) {
+    // Aplica o tema no elemento <html> — o CSS já reage via [data-theme="..."]
+    document.documentElement.setAttribute("data-theme", tema);
+
+    // Salva a preferência para lembrar na próxima visita
+    localStorage.setItem("tema", tema);
+
+    // Marca visualmente o botão ativo no seletor de tema
+    document.querySelectorAll(".theme-btn").forEach(botao => {
+        botao.classList.remove("active");
+    });
+
+    const botaoAtivo = document.querySelector(`.theme-btn[data-theme="${tema}"]`);
+    if (botaoAtivo) botaoAtivo.classList.add("active");
+}
+
+// Alterna rapidamente entre claro e escuro (útil para um botão único)
+function alternarTema() {
+    const temaAtual = document.documentElement.getAttribute("data-theme") || "dark";
+    const novoTema = temaAtual === "dark" ? "light" : "dark";
+    trocarTema(novoTema);
+}
+
+// Aplica o tema salvo assim que a página carrega
+document.addEventListener("DOMContentLoaded", () => {
+    const temaSalvo = localStorage.getItem("tema") || "dark";
+    trocarTema(temaSalvo);
+});
