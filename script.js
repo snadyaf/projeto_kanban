@@ -200,7 +200,7 @@ function abrirModalNovaTarefa(){
 /* array para adicinar as tarefas */
 const tarefas = []
 
-/* Salvando os valores de cada campo */
+//Salvando os valores de cada campo 
 function salvarTarefa(){
   const titulo = document.getElementById('modal-tarefa-titulo').value
   const descricao = document.getElementById('modal-tarefa-desc').value
