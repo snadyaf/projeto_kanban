@@ -1,4 +1,4 @@
-//acesso login
+//lógica de login - Snádya 
 
 function validarLogin() {
   const email = document.getElementById("email").value;
